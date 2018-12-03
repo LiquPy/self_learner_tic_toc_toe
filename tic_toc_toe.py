@@ -9,7 +9,7 @@ class tic_toc_toe_game(object):
     """
     board: 3x3 matrix where 1 = x; 2 =o; 0 = otherwise
     """
-    def __init__(self, mode='training'):
+    def __init__(self, mode='training', ai_mode='ML'):
         self.board = np.full((3,3), 0)
         if mode == 'training':
             self.turn = np.random.randint(1, 3) # 1: computer, 2: human
@@ -19,6 +19,7 @@ class tic_toc_toe_game(object):
         self.moves = 0 # number of moves played
         self.generate_valid_moves()
         self.status = 1 # 3: won, 2: drawn, 1: in progress, 0: lost
+        self.ai_mode = ai_mode # 'ML': next computer move based on trained ML, otherwise: hard-coded 
 
     def switch_turn(self):
         if self.turn == 1:
@@ -46,20 +47,93 @@ class tic_toc_toe_game(object):
             self.switch_turn()
             self.generate_valid_moves()
             self.update_status()
+
+    def computer_smart_move(self):
+        # hard-coded moves in order to generate training dataset
+
+        for the_move in self.valid_moves:
+        # loop over rows to find wining move
+            temporary_board = self.board.copy()
+            temporary_board[the_move] = 1
+            for i in range(3):
+                if list(temporary_board[i, :]).count(1) == 3:
+                    return the_move
+
+        for the_move in self.valid_moves:
+        # loop over column to find wining move
+            temporary_board = self.board.copy()
+            temporary_board[the_move] = 1
+            for i in range(3):
+                if list(temporary_board[:,i]).count(1) == 3:
+                    return the_move
+
+        for the_move in self.valid_moves:
+        # look at first diagonal to find wining move
+            temporary_board = self.board.copy()
+            temporary_board[the_move] = 1
+            if list(np.diag(temporary_board)).count(1) == 3:
+                return the_move
+
+        for the_move in self.valid_moves:
+        # look at second diagonal to find wining move
+            temporary_board = self.board.copy()
+            temporary_board[the_move] = 1            
+            if list(np.diag(np.fliplr(temporary_board))).count(1) == 3:
+                return the_move
+
+        for the_move in self.valid_moves:
+        # loop over rows to find blocking move
+            temporary_board = self.board.copy()
+            temporary_board[the_move] = 2
+            for i in range(3):
+                if list(temporary_board[i, :]).count(2) == 3:
+                    return the_move
+
+        for the_move in self.valid_moves:
+        # loop over column to find blocking move
+            temporary_board = self.board.copy()
+            temporary_board[the_move] = 2
+            for i in range(3):
+                if list(temporary_board[:,i]).count(2) == 3:
+                    return the_move
+
+        for the_move in self.valid_moves:
+        # look at first diagonal to find blocking move
+            temporary_board = self.board.copy()
+            temporary_board[the_move] = 2
+            if list(np.diag(temporary_board)).count(2) == 3:
+                return the_move
+
+        for the_move in self.valid_moves:
+        # look at second diagonal to find blocking move
+            temporary_board = self.board.copy()
+            temporary_board[the_move] = 2            
+            if list(np.diag(np.fliplr(temporary_board))).count(2) == 3:
+                return the_move
+
+        # if not a wining or blocking move was available return a random move
+        return random.choice(self.valid_moves)
+    
     def play(self, position):
         self.update(position) # players move
 
         if self.game_finished == 1:
             return None
+
         # computer's next move
-        moves_ranks = {}
-        for move in self.valid_moves:
-            create_input_array = np.array(list(self.board.flatten()) + list(move)).reshape(1,-1)
-            moves_ranks[move] = predictive_model.predict(create_input_array)[0]
-        argmax = max(iter(moves_ranks.keys()), key=(lambda key: moves_ranks[key]))
-        print(moves_ranks, argmax)
-        #new_move_tuple = random.choice(self.valid_moves)
-        self.update(argmax) # computer's move
+        if self.ai_mode == 'ML':
+            # based on trained ML model
+            moves_ranks = {}
+            for move in self.valid_moves:
+                create_input_array = np.array(list(self.board.flatten()) + list(move)).reshape(1,-1)
+                moves_ranks[move] = predictive_model.predict(create_input_array)[0]
+            argmax = max(iter(moves_ranks.keys()), key=(lambda key: moves_ranks[key]))
+            #print(moves_ranks, argmax)
+            #new_move_tuple = random.choice(self.valid_moves)
+            self.update(argmax) # computer's move
+        else:
+            # based on hard-coded
+            self.update(self.computer_smart_move())
         
     def update_status(self):
         # check for win along rows

@@ -2,6 +2,7 @@ import numpy as np
 import random
 import pickle
 
+#load pickled ANN model
 with open('pickled_model.pkl', 'rb') as file:  
     predictive_model = pickle.load(file)
 
@@ -12,7 +13,7 @@ class tic_toc_toe_game(object):
     def __init__(self, mode='training', ai_mode='ML'):
         self.board = np.full((3,3), 0)
         if mode == 'training':
-            self.turn = np.random.randint(1, 3) # 1: computer, 2: human
+            self.turn = 2 # 1: computer, 2: human
         else:
             self.turn = 2
         self.game_finished = 0
@@ -131,9 +132,16 @@ class tic_toc_toe_game(object):
             #print(moves_ranks, argmax)
             #new_move_tuple = random.choice(self.valid_moves)
             self.update(argmax) # computer's move
+            return argmax
+        elif self.ai_mode == 'naive':
+            computers_move = random.choice(self.valid_moves)
+            self.update(computers_move)
+            return computers_move
         else:
             # based on hard-coded
-            self.update(self.computer_smart_move())
+            computers_move = self.computer_smart_move()
+            self.update(computers_move)
+            return computers_move
         
     def update_status(self):
         # check for win along rows

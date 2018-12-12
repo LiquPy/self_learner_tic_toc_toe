@@ -69,4 +69,4 @@ for b_n in range(batch_start, batch_end):
 
     # normalize scores
     main_df.score = main_df.score/max(abs(min(main_df.score)), max(main_df.score))
-    main_df.to_csv('training_data_{}.csv'.format(b_n), index= None, header=None)
+    main_df.to_csv('training_datasets/training_data_{}.csv'.format(b_n), index= None, header=None)

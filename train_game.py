@@ -20,7 +20,7 @@ model = MLPRegressor(hidden_layer_sizes=(15, 15), random_state=1, verbose=100)
 
 for i in range(1, 81):
     # load training data
-    training_data = pd.read_csv('training_data_{}.csv'.format(i), header=None)
+    training_data = pd.read_csv('training_datasets/training_data_{}.csv'.format(i), header=None)
     x = training_data.iloc[:, :-1]
     y = training_data.iloc[:, -1]
 

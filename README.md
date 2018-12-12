@@ -1,5 +1,5 @@
 # self_learner_tic_toc_toe
-learns how to play tic toc toe without prior knowledge about goal. The only information is wheher the game is won/lost/drawn
+learns how to play tic toc toe without prior knowledge about goal. The only information is wheher the game is won/lost/drawn + the number of moves it takes before win/lose/tie
 
 play_vs_computer.py: use this module to play vs. trained model.
 tic_toc_toe.py: main game

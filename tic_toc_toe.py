@@ -9,6 +9,7 @@ with open('pickled_model.pkl', 'rb') as file:
 class tic_toc_toe_game(object):
     """
     board: 3x3 matrix where 1 = x; 2 =o; 0 = otherwise
+
     """
     def __init__(self, mode='training', ai_mode='ML'):
         self.board = np.full((3,3), 0)
@@ -23,12 +24,14 @@ class tic_toc_toe_game(object):
         self.ai_mode = ai_mode # 'ML': next computer move based on trained ML, otherwise: hard-coded 
 
     def switch_turn(self):
+        # Switches turns
         if self.turn == 1:
             self.turn = 2
         else:
             self.turn = 1
 
     def generate_valid_moves(self):
+        # Generates a list of all (possible) valid moves
         valid_moves_array = []
         for i in range(3):
             for j in range(3):
@@ -39,6 +42,7 @@ class tic_toc_toe_game(object):
 
     
     def update(self, position):
+        # updates status of game including board state, switches turn, check for results, ...
         if self.game_finished == 0:
             if (self.board[position] != 0):
                 raise ValueError('Invalid move')
@@ -50,7 +54,7 @@ class tic_toc_toe_game(object):
             self.update_status()
 
     def computer_smart_move(self):
-        # hard-coded moves in order to generate training dataset
+        # hard-coded smart moves in order to generate training dataset
 
         for the_move in self.valid_moves:
         # loop over rows to find wining move
@@ -116,14 +120,15 @@ class tic_toc_toe_game(object):
         return random.choice(self.valid_moves)
     
     def play(self, position):
+        # human moves followed by computer move
         self.update(position) # players move
-
+        
         if self.game_finished == 1:
             return None
 
         # computer's next move
         if self.ai_mode == 'ML':
-            # based on trained ML model
+            # computer plays based on trained ML model
             moves_ranks = {}
             for move in self.valid_moves:
                 create_input_array = np.array(list(self.board.flatten()) + list(move)).reshape(1,-1)
@@ -134,16 +139,19 @@ class tic_toc_toe_game(object):
             self.update(argmax) # computer's move
             return argmax
         elif self.ai_mode == 'naive':
+            # computer plays naive, chooses randomly from possible valid moves
             computers_move = random.choice(self.valid_moves)
             self.update(computers_move)
             return computers_move
         else:
-            # based on hard-coded
+            # computer plays based on hard-coded smart moves
             computers_move = self.computer_smart_move()
             self.update(computers_move)
             return computers_move
         
     def update_status(self):
+        # checks for win/lose/tie/inprogress and updates
+        
         # check for win along rows
         for i in range(3):
             if list(self.board[i, :]).count(1) == 3:
@@ -175,11 +183,12 @@ class tic_toc_toe_game(object):
             self.status = 0
         
         # Check for ties
-        if self.moves >= 9:
+        if (np.count_nonzero(self.board) == 9) and (self.game_finished == 0):
             self.game_finished = 1
             self.status = 2
         elif self.game_finished == 0:
             self.status = 1
+        #print(self.board, np.count_nonzero(self.board), self.status, self.game_finished)
 
 
 ##if __name__  == '__main__':

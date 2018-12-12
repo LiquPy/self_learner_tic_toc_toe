@@ -3,7 +3,8 @@ game_status = ['You won !', "in progress", "It's a tie", 'You lost :( ']
 
 game = tic_toc_toe_game(mode='vscomputer', ai_mode='ML')
 
-print('Your number is "2". Rock on!')
+print("Do not use Python's indexing notation, address the board cells with numbers from 1 to 3.")
+print("Your number is '2'. Let's see if you can beat our AI Rock on!")
 while game.game_finished == 0:
     print(game.board)
     try:

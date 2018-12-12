@@ -5,10 +5,10 @@ import numpy as np
 # ******* IF this is the first time learning: *******
 from sklearn.neural_network import MLPRegressor
 
-training_data = pd.read_csv('training_data_1.csv', header=None)
-
-x = training_data.iloc[:, :-1]
-y = training_data.iloc[:, -1]
+##training_data = pd.read_csv('training_data_1.csv', header=None)
+##
+##x = training_data.iloc[:, :-1]
+##y = training_data.iloc[:, -1]
 
 model = MLPRegressor(hidden_layer_sizes=(15, 15), random_state=1, verbose=100)
 
@@ -18,7 +18,7 @@ model = MLPRegressor(hidden_layer_sizes=(15, 15), random_state=1, verbose=100)
 ##with open('pickled_model.pkl', 'rb') as file:
 ##    model = pickle.load(file)
 
-for i in range(1, 4):
+for i in range(1, 81):
     # load training data
     training_data = pd.read_csv('training_data_{}.csv'.format(i), header=None)
     x = training_data.iloc[:, :-1]
